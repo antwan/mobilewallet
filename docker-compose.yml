@@ -1,0 +1,29 @@
+version: "2.3"
+
+services:
+  app:
+    build: .
+    depends_on:
+      - db
+    command: [uvicorn --reload src.app:app --port 8000 --host 0.0.0.0]
+    volumes:
+      - ./migrations:/app/migrations
+      - ./docs:/app/docs
+      - ./src:/app/src
+      - ./tests:/app/tests
+    ports:
+      - "8000:8000"
+    restart: always
+
+  db:
+    build: db
+    ports:
+      - "5434:5432"
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=admin
+    volumes:
+      - ./.data/db:/var/lib/postgresql/data
+    networks:
+      - default
+

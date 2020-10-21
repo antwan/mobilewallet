@@ -1,0 +1,79 @@
+openapi: 3.0.0
+info:
+  title: MobileWallet API
+  version: '1.0'
+  description: A simple mobile wallet API
+servers:
+  - url: http://localhost:8000
+paths:
+  /balances:
+    get:
+      summary: List balances
+      description: List the user wallets and their balances
+      operationId: listBalances
+  /transactions:
+    get:
+      summary: List transactions
+      description: Display the user transactions for one or all of their wallets
+      operationId: listTransactions
+      parameters:
+      - in: query
+        name: wallet
+        description: ID of the wallet to show transactions from
+        schema:
+          type: string
+    post:
+      summary: Create transactions
+      operationId: createTransaction
+      description: Creates a new transaction to transfer money
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sender:
+                  type: string
+                  title: test
+                  format: uuid
+                  description: The account sending from. Must be an account of the current user
+                recipient:
+                  type: string
+                  format: uuid
+                  description: The account sending to
+                amount:
+                  type: integer
+                  minimum: 1
+                  description: Amount to transfer
+                label:
+                  type: string
+                  description: Label of the transaction
+              required:
+                - sender
+                - recipient
+                - amount
+  /login:
+    post:
+      summary: Login
+      operationId: login
+      description: Login as an user and save credentials in the session for subsequent cals
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: The user email account
+                password:
+                  type: string
+                  description: The user password
+  /logout:
+    get:
+      summary: Logout
+      operationId: logout
+      description: Logout from the current session
